@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: config
+
+  # Configuration for Spring Cloud Config Server
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/config
+
+  # profile
+  profiles:
+    active: native
