@@ -6,9 +6,10 @@ spring:
   cloud:
     config:
       server:
-        native:
-          search-locations: classpath:/config
-
+        git:
+          uri: https://github.com/nguyendangviet12022004/stack-overflow-clone-config
+          cloneOnStart: true
+          force-pull: true
   # profile
   profiles:
-    active: native
+    active: git
