@@ -1,0 +1,49 @@
+services:
+
+  #mail stmp server --------------------------------------------
+  mail-smtp:
+    image: maildev/maildev
+    container_name: mail-smtp
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+    networks:
+      - backend-network
+
+  #db --------------------------------------------------------
+  user-db:
+    image: mysql:8.0.44-debian
+    container_name: user-db
+    env_file:
+      - path: ../env/user/user.db.env
+    ports:
+        - "33061:3306"
+    volumes:
+        - user-db-data:/var/lib/mysql
+    networks:
+      - backend-network
+
+  post-db:
+    image: mysql:8.0.44-debian
+    container_name: post-db
+    env_file:
+      - path: ../env/post/post.db.env
+    ports:
+      - "33062:3306"
+    volumes:
+      - "post-db-data:/var/lib/mysql"
+    networks:
+      - backend-network
+
+
+#volumes
+volumes:
+    user-db-data:
+      driver: local
+    post-db-data:
+      driver: local
+
+#networks
+networks:
+    backend-network:
+      driver: bridge
