@@ -13,3 +13,8 @@ spring:
   # profile
   profiles:
     active: git
+
+#port
+server:
+  port: 8070
+

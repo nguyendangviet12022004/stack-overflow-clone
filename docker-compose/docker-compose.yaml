@@ -10,6 +10,18 @@ services:
     networks:
       - backend-network
 
+  #rabbitmq
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    env_file:
+      - path: ../env/rabbitmq/rabbitmq.env
+    networks:
+      - backend-network
+
   #db --------------------------------------------------------
   user-db:
     image: mysql:8.0.44-debian
@@ -35,7 +47,13 @@ services:
     networks:
       - backend-network
 
-
+  #config server --------------------------------------
+  config:
+    build:
+      context: ./../config
+    container_name: config
+    ports:
+      - "8070:8070"
 #volumes
 volumes:
     user-db-data:
