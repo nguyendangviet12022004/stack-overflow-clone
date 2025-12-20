@@ -1,13 +1,57 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Document</title>
+    <meta charset="UTF-8" />
+    <title>WebRTC 1-1 Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: #fff;
+            text-align: center;
+        }
+
+        .videos {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        video {
+            width: 360px;
+            height: 270px;
+            background: #000;
+            border: 2px solid #444;
+        }
+
+        #status {
+            margin-top: 10px;
+            color: #0f0;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello</h1>
-    <video id="localVideo" autoplay playsinline controls="false"/>
-    <script src="script.js"></script>
+
+<h2>WebRTC Video Call (1–1)</h2>
+
+<div class="videos">
+    <!-- Local video -->
+    <div>
+        <p>Local</p>
+        <video id="localVideo" autoplay playsinline muted></video>
+    </div>
+
+    <!-- Remote video -->
+    <div>
+        <p>Remote</p>
+        <video id="remoteVideo" autoplay playsinline></video>
+    </div>
+</div>
+
+<div id="status">Connecting...</div>
+
+<!-- JS -->
+<script src="script.js"></script>
 </body>
 </html>
