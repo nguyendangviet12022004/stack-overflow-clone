@@ -54,6 +54,48 @@ services:
     container_name: config
     ports:
       - "8070:8070"
+
+  #eureka server --------------------------------------
+  eureka:
+    build:
+      context: ./../eureka
+    container_name: eureka
+    ports:
+        - "8761:8761"
+    env_file:
+      - ../env/eureka/eureka.prod.env
+      - ../env/.env
+    depends_on:
+      - config
+
+
+  #gateway server --------------------------------------
+  gateway:
+    build:
+      context: ./../gateway
+    container_name: gateway
+    ports:
+      - "8080:8080"
+    env_file:
+      - ../env/.env
+    depends_on:
+      - eureka
+
+    #mail service --------------------------------------
+  mail:
+      build:
+          context: ./../mail
+      container_name: mail
+      ports:
+          - "8003:8003"
+      env_file:
+          - ../env/mail/mail.prod.env
+          - ../env/.env
+      depends_on:
+          - eureka
+          - mail-smtp
+          - rabbitmq
+
 #volumes
 volumes:
     user-db-data:
