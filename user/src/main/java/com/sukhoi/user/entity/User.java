@@ -36,6 +36,10 @@ public class User implements UserDetails {
         return List.of();
     }
 
+    public Integer getId() {
+        return this.id;
+    }
+
     @Override
     public @Nullable String getPassword() {
         return this.password;
