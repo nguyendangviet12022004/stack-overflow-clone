@@ -1,3 +1,5 @@
+ARG PORT=8080
+
 FROM maven:3.9.11-eclipse-temurin-21-alpine AS build
 
 WORKDIR /build
@@ -15,8 +17,10 @@ FROM eclipse-temurin:21.0.9_10-jre-alpine-3.22
 WORKDIR /app
 
 COPY --from=build /build/target/*.jar ./app.jar
+RUN apk  update; apk  add curl
 
-EXPOSE 8080
+
+EXPOSE ${PORT}
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
 
