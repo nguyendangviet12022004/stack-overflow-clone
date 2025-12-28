@@ -33,13 +33,13 @@ public class AuthController {
         String accessToken = tokenResponse.accessToken();
         String refreshToken = tokenResponse.refreshToken();
 
-        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", accessToken)
+        ResponseCookie accessTokenCookie = ResponseCookie.from("access_token", accessToken)
                 .httpOnly(true)
                 .path("/")
                 .maxAge(60 * 15) // 15 minutes
                 .build();
 
-        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refresh_token", refreshToken)
                 .httpOnly(true)
                 .path("/")
                 .maxAge(60 * 60 * 24 * 7) // 7 days
