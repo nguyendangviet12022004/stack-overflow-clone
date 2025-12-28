@@ -19,6 +19,12 @@ services:
       - "15672:15672"
     env_file:
       - path: ../env/rabbitmq/rabbitmq.env
+    healthcheck:
+      test: "rabbitmq-diagnostics -q ping"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
     networks:
       - backend-network
 
@@ -51,10 +57,9 @@ services:
   config:
     build:
       context: ../config
-      dockerfile: ./../docker-compose/Dockerfile
+      dockerfile: ./../Dockerfile
       args:
         - PORT=8070
-
     container_name: config
     healthcheck:
       test: "curl --fail --silent localhost:8070/actuator/health | grep UP || exit 1"
@@ -64,48 +69,69 @@ services:
       start_period: 40s
     ports:
       - "8070:8070"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   #eureka server --------------------------------------
   eureka:
     build:
-      context: ./../eureka
+      context: ../eureka
+      dockerfile: ./../Dockerfile
+      args:
+        - PORT=8761
     container_name: eureka
     ports:
         - "8761:8761"
     env_file:
       - ../env/eureka/eureka.prod.env
       - ../env/.env
+    healthcheck:
+      test: "curl --fail --silent localhost:8761/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
     depends_on:
-      - config
-
+      config:
+        condition: service_healthy
 
   #gateway server --------------------------------------
   gateway:
     build:
-      context: ./../gateway
+      context: ../gateway
+      dockerfile: ./../Dockerfile
+      args:
+        - PORT=8080
     container_name: gateway
     ports:
       - "8080:8080"
     env_file:
       - ../env/.env
     depends_on:
-      - eureka
+      eureka:
+        condition: service_healthy
 
     #mail service --------------------------------------
 
+
   mail:
-      build:
-          context: ./../mail
-      container_name: mail
-      ports:
-          - "8003:8003"
-      env_file:
-          - ../env/mail/mail.prod.env
-          - ../env/.env
-      depends_on:
-          - eureka
-          - mail-smtp
-          - rabbitmq
+    build:
+      context: ../mail
+      dockerfile: ./../Dockerfile
+      args:
+        - PORT=8003
+    container_name: mail
+    ports:
+        - "8003:8003"
+    env_file:
+        - ../env/mail/mail.prod.env
+        - ../env/.env
+    depends_on:
+        eureka:
+            condition: service_healthy
+        mail-smtp:
+            condition: service_healthy
 
 #volumes
 volumes:
