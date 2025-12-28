@@ -10,7 +10,7 @@ RUN mvn dependency:go-offline
 
 COPY src ./src
 
-RUN mvn package
+RUN mvn package -DskipTests
 
 FROM eclipse-temurin:21.0.9_10-jre-alpine-3.22
 

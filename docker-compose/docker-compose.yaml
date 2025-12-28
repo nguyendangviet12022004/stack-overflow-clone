@@ -7,8 +7,7 @@ services:
     ports:
       - "1080:1080"
       - "1025:1025"
-    networks:
-      - backend-network
+
 
   #rabbitmq
   rabbitmq:
@@ -25,8 +24,7 @@ services:
       timeout: 5s
       retries: 5
       start_period: 40s
-    networks:
-      - backend-network
+
 
   #db --------------------------------------------------------
   user-db:
@@ -38,8 +36,13 @@ services:
         - "33061:3306"
     volumes:
         - user-db-data:/var/lib/mysql
-    networks:
-      - backend-network
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
 
   post-db:
     image: mysql:8.0.44-debian
@@ -50,8 +53,13 @@ services:
       - "33062:3306"
     volumes:
       - "post-db-data:/var/lib/mysql"
-    networks:
-      - backend-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
 
   #config server --------------------------------------
   config:
@@ -114,7 +122,7 @@ services:
 
     #mail service --------------------------------------
 
-
+  #services
   mail:
     build:
       context: ../mail
@@ -133,14 +141,49 @@ services:
         mail-smtp:
             condition: service_healthy
 
+  user:
+    build:
+      context: ../user
+      dockerfile: ./../Dockerfile
+      args:
+        - PORT=8001
+    container_name: user
+    ports:
+        - "8001:8001"
+    env_file:
+      - ../env/user/user.prod.env
+      - ../env/.env
+    depends_on:
+      eureka:
+        condition: service_healthy
+      user-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  post:
+    build:
+      context: ../post
+      dockerfile: ./../Dockerfile
+      args:
+        - PORT=8002
+    container_name: post
+    ports:
+        - "8002:8002"
+    env_file:
+        - ../env/post/post.prod.env
+        - ../env/.env
+    depends_on:
+      eureka:
+        condition: service_healthy
+      post-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
 #volumes
 volumes:
     user-db-data:
       driver: local
     post-db-data:
       driver: local
-
-#networks
-networks:
-    backend-network:
-      driver: bridge

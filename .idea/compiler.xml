@@ -8,9 +8,10 @@
         <outputRelativeToContentRoot value="true" />
         <module name="signaling" />
         <module name="mail" />
+        <module name="post" />
+        <module name="eureka" />
         <module name="user" />
         <module name="config" />
-        <module name="eureka" />
         <module name="gateway" />
       </profile>
     </annotationProcessing>
@@ -24,6 +25,7 @@
       <module name="eureka" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="mail" options="-parameters" />
+      <module name="post" options="-parameters" />
       <module name="signaling" options="-parameters" />
       <module name="user" options="-parameters" />
     </option>
