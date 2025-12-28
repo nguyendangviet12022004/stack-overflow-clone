@@ -92,6 +92,7 @@ services:
       - eureka
 
     #mail service --------------------------------------
+
   mail:
       build:
           context: ./../mail

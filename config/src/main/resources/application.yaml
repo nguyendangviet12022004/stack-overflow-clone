@@ -14,6 +14,14 @@ spring:
   profiles:
     active: git
 
+#encryption
+encrypt:
+  key-store:
+    location: classpath:/server.jks
+    password: password
+    alias: secretkey
+    secret: password
+
 #healthcheck
 management:
   endpoints:
