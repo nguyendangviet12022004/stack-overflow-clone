@@ -1,5 +1,7 @@
 package com.sukhoi.user.config;
 
+import com.sukhoi.user.filter.AuthFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,12 +15,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import java.util.List;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final AuthFilter authFilter;
 
     private static String[] WHITELIST = {
             "/v3/api-docs/**",
@@ -42,8 +46,13 @@ public class SecurityConfig {
                 // authorize requests
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(WHITELIST).permitAll()
-                        .anyRequest().permitAll()
-                );
+                        .anyRequest().authenticated()
+                )
+
+
+                // add filter
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+        ;
 
         return http.build();
     }

@@ -10,3 +10,5 @@ spring:
       ddl-auto: update
     show-sql: true
 
+private-key:
+  path: ${PRIVATE_KEY_PATH:key/private.pem}

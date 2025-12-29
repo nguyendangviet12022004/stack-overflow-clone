@@ -40,6 +40,10 @@ public class User implements UserDetails {
         return this.id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     @Override
     public @Nullable String getPassword() {
         return this.password;

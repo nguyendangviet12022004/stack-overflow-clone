@@ -3,6 +3,7 @@ package com.sukhoi.gateway.util;
 import io.jsonwebtoken.Jwts;
 import jakarta.annotation.PostConstruct;
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
@@ -20,10 +21,14 @@ public class JwtUtil {
 
     private RSAPublicKey publicKey;
 
+    @Value("${public-key.path}")
+    private String publicKeyPath;
+
+
     @PostConstruct
     public void readPKCS8PublicKey() throws Exception {
-        String userDir = System.getProperty("user.dir");
-        String key = new String(Files.readAllBytes(Paths.get(userDir,"gateway/src/main/resources/public.pem")));
+        String key = new String(Files.readAllBytes(Paths.get(publicKeyPath)));
+
 
         String privateKeyPEM = key
                 .replace("-----BEGIN PUBLIC KEY-----", "")

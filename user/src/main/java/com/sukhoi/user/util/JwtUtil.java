@@ -3,6 +3,7 @@ package com.sukhoi.user.util;
 import io.jsonwebtoken.Jwts;
 import jakarta.annotation.PostConstruct;
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 
@@ -18,10 +19,12 @@ public class JwtUtil {
 
     private RSAPrivateKey privateKey;
 
+    @Value("${private-key.path}")
+    private String privateKeyPath;
+
     @PostConstruct
     public void readPKCS8PrivateKey() throws Exception {
-        String userDir = System.getProperty("user.dir");
-        String key = new String(Files.readAllBytes(Paths.get(userDir,"user/src/main/resources/private.pem")));
+        String key = new String(Files.readAllBytes(Paths.get(privateKeyPath)));
 
         String privateKeyPEM = key
                 .replace("-----BEGIN PRIVATE KEY-----", "")
