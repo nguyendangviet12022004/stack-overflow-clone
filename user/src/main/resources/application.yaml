@@ -5,5 +5,10 @@ spring:
   #config server
   config:
     import: optional:configserver:http://${CONFIG_SERVER_HOST:localhost}:${CONFIG_SERVER_PORT:8070}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
 
-
+private-key:
+  path: ${PRIVATE_KEY_PATH:key/private.pem}

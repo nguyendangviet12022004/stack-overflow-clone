@@ -15,3 +15,7 @@ spring:
               lower-case-service-id: true
 
 
+public-key:
+  path: ${PUBLIC_KEY_PATH:key/public.pem}
+
+

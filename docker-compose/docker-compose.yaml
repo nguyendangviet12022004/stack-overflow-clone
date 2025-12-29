@@ -112,9 +112,15 @@ services:
       args:
         - PORT=8080
     container_name: gateway
+    volumes:
+      - type: bind
+        source: ./../key/public.pem
+        target: /app/public.pem
+        read_only: true
     ports:
       - "8080:8080"
     env_file:
+      - ../env/gateway/gateway.prod.env
       - ../env/.env
     depends_on:
       eureka:
@@ -148,6 +154,11 @@ services:
       args:
         - PORT=8001
     container_name: user
+    volumes:
+      - type: bind
+        source: ./../key/private.pem
+        target: /app/private.pem
+        read_only: true
     ports:
         - "8001:8001"
     env_file:
