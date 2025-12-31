@@ -1,3 +1,7 @@
 spring:
   application:
     name: mail
+
+    #config server
+  config:
+    import: optional:configserver:http://${CONFIG_SERVER_HOST:localhost}:${CONFIG_SERVER_PORT:8070}

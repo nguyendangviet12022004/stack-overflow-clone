@@ -1,0 +1,5 @@
+services:
+  networks-base-config:
+    networks:
+      - backend-network
+

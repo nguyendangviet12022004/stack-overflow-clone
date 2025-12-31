@@ -14,7 +14,40 @@ spring:
   profiles:
     active: git
 
+#encryption
+encrypt:
+  key-store:
+    location: classpath:/server.jks
+    password: password
+    alias: secretkey
+    secret: password
+
+#healthcheck
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  info:
+    env:
+      enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+        enabled: true
 #port
 server:
   port: 8070
 
+
+#info
+info:
+  app:
+    name: ${spring.application.name}
+    description: Config Service
+    version: 1.0.0
