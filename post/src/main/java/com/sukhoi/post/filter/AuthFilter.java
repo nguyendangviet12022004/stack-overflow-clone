@@ -1,6 +1,5 @@
-package com.sukhoi.user.filter;
+package com.sukhoi.post.filter;
 
-import com.sukhoi.user.entity.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
