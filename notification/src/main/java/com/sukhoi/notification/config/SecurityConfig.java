@@ -1,6 +1,6 @@
-package com.sukhoi.post.config;
+package com.sukhoi.notification.config;
 
-import com.sukhoi.post.filter.AuthFilter;
+import com.sukhoi.notification.filter.AuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +25,8 @@ public class SecurityConfig {
     private final static String[] WHITELIST = {
             "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/swagger-ui.html"};
+            "/swagger-ui.html",
+            "/notifications/**"};
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http

@@ -1,4 +1,4 @@
-package com.sukhoi.post.filter;
+package com.sukhoi.notification.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

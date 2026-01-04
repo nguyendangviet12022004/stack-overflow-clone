@@ -9,10 +9,19 @@
         <outputRelativeToContentRoot value="true" />
         <module name="mail" />
         <module name="post" />
-        <module name="eureka" />
         <module name="user" />
         <module name="config" />
+        <module name="eureka" />
         <module name="gateway" />
+      </profile>
+      <profile name="Annotation profile for notification" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
+        </processorPath>
+        <module name="notification" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -26,6 +35,7 @@
       <module name="eureka" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="mail" options="-parameters" />
+      <module name="notification" options="-parameters" />
       <module name="post" options="-parameters" />
       <module name="signaling" options="-parameters" />
       <module name="user" options="-parameters" />
