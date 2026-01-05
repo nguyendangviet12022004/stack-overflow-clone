@@ -2,12 +2,7 @@ spring:
   application:
     name: notification
 
-
-  mongodb:
-    authentication-database: admin
-    database: ${NOTIFICATION_DB_DATABASE:notificationdb}
-    port: ${NOTIFICATION_DB_PORT:27017}
-    host: ${NOTIFICATION_DB_HOST:localhost}
-    username: ${NOTIFICATION_DB_USERNAME:root}
-    password: ${NOTIFICATION_DB_PASSWORD:password}
+  #config server
+  config:
+    import: optional:configserver:http://${CONFIG_SERVER_HOST:localhost}:${CONFIG_SERVER_PORT:8070}
 
