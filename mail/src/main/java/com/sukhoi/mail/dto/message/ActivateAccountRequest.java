@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class ActivateAccountRequest {
     private String email;
 
-    private String userId;
+    private int userId;
 
     private String activationCode;
 }
