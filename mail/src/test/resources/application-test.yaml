@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: mail-test
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: password
+  config:
+    import: optional:configserver:
+  mail:
+    host: localhost
+    port: 1025
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: false
+            required: false
+          auth: false
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
