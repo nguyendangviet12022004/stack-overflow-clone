@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 const API_URL = 'http://localhost:8080/post/posts';
@@ -19,8 +19,12 @@ export class PostService {
         return this.http.get<any>(`${API_URL}/${id}`, { withCredentials: true });
     }
 
-    searchPosts(tag: string = ''): Observable<any[]> {
-        return this.http.get<any[]>(`${API_URL}?tag=${tag}`, { withCredentials: true });
+    searchPosts(tags: string[] = [], query: string = ''): Observable<any[]> {
+        let params = new HttpParams().set('query', query);
+        tags.forEach(tag => {
+            params = params.append('tag', tag);
+        });
+        return this.http.get<any[]>(API_URL, { params, withCredentials: true });
     }
 
     searchTags(query: string): Observable<any[]> {

@@ -44,12 +44,14 @@ public class PostService {
         return mapToPostResponse(savedPost);
     }
 
-    public List<PostResponse> searchPosts(String tagName) {
+    public List<PostResponse> searchPosts(List<String> tagNames, String query) {
         List<Post> posts;
-        if (tagName == null || tagName.isEmpty()) {
-            posts = postRepository.findAll();
+        if (query != null && !query.isEmpty()) {
+            posts = postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(query, query);
+        } else if (tagNames != null && !tagNames.isEmpty()) {
+            posts = postRepository.findDistinctByTags_NameIn(tagNames);
         } else {
-            posts = postRepository.findByTags_Name(tagName);
+            posts = postRepository.findAll();
         }
         return posts.stream().map(this::mapToPostResponse).collect(Collectors.toList());
     }

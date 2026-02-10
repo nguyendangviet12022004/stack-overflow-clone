@@ -29,8 +29,10 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PostResponse>> searchPosts(@RequestParam(required = false) String tag) {
-        return ResponseEntity.ok(postService.searchPosts(tag));
+    public ResponseEntity<List<PostResponse>> searchPosts(
+            @RequestParam(required = false) List<String> tag,
+            @RequestParam(required = false) String query) {
+        return ResponseEntity.ok(postService.searchPosts(tag, query));
     }
 
     @GetMapping("/{id}")
