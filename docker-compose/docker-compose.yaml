@@ -1,12 +1,12 @@
 services:
 
   #mail stmp server --------------------------------------------
-  mail-smtp:
-    image: maildev/maildev
-    container_name: mail-smtp
-    ports:
-      - "1080:1080"
-      - "1025:1025"
+  # mail-smtp:
+  #   image: maildev/maildev
+  #   container_name: mail-smtp
+  #   ports:
+  #     - "1080:1080"
+  #     - "1025:1025"
 
 
   #rabbitmq
@@ -60,21 +60,21 @@ services:
       start_period: 40s
 
 
-  notification-db:
-    image: mongo
-    container_name: notification-db
-    ports:
-      - "27017:27017"
-    volumes:
-      - notification-db-data:/data/db
-    env_file:
-      - path: ../env/notification/notification.db.env
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
-      interval: 20s
-      timeout: 5s
-      retries: 5
-      start_period: 40s
+  # notification-db:
+  #   image: mongo
+  #   container_name: notification-db
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - notification-db-data:/data/db
+  #   env_file:
+  #     - path: ../env/notification/notification.db.env
+  #   healthcheck:
+  #     test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+  #     interval: 20s
+  #     timeout: 5s
+  #     retries: 5
+  #     start_period: 40s
 
 
   #config server --------------------------------------
@@ -144,24 +144,24 @@ services:
 
     #mail service --------------------------------------
 
-  #services
-  mail:
-    build:
-      context: ../mail
-      dockerfile: ./../Dockerfile
-      args:
-        - PORT=8003
-    container_name: mail
-    ports:
-        - "8003:8003"
-    env_file:
-        - ../env/mail/mail.prod.env
-        - ../env/.env
-    depends_on:
-        eureka:
-            condition: service_healthy
-        mail-smtp:
-            condition: service_healthy
+  # #services
+  # mail:
+  #   build:
+  #     context: ../mail
+  #     dockerfile: ./../Dockerfile
+  #     args:
+  #       - PORT=8003
+  #   container_name: mail
+  #   ports:
+  #       - "8003:8003"
+  #   env_file:
+  #       - ../env/mail/mail.prod.env
+  #       - ../env/.env
+  #   depends_on:
+  #       eureka:
+  #           condition: service_healthy
+  #       mail-smtp:
+  #           condition: service_healthy
 
   user:
     build:

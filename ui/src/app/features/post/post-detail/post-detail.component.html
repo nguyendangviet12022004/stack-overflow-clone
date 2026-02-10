@@ -23,7 +23,8 @@
             <div class="prose prose-sm max-w-none text-gray-700 mb-4" [innerHTML]="comment.content"></div>
             <div class="flex justify-between items-center text-xs text-gray-500">
                 <div class="flex gap-4">
-                    <button (click)="toggleReplyForm(comment.id)" class="text-blue-600 hover:underline">Reply</button>
+                    <button (click)="replyToUser(comment.id, comment.userId)"
+                        class="text-blue-600 hover:underline">Reply</button>
                     <button *ngIf="comment.replyCount > 0 && !replies[comment.id]" (click)="loadReplies(comment.id)"
                         class="text-orange-600 font-medium flex items-center gap-1">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -41,9 +42,11 @@
             <!-- Replies Section -->
             <div *ngIf="replies[comment.id]" class="mt-4 ml-8 space-y-4 border-l-2 border-gray-100 pl-4">
                 <div *ngFor="let reply of replies[comment.id]" class="text-sm">
-                    <p class="text-gray-700">{{ reply.content }}</p>
-                    <div class="text-[11px] text-gray-400 mt-1">
-                        replied {{ reply.createdAt | date:'short' }} by User #{{ reply.userId }}
+                    <div class="text-gray-700" [innerHTML]="reply.content"></div>
+                    <div class="text-[11px] text-gray-400 mt-1 flex gap-2">
+                        <span>replied {{ reply.createdAt | date:'short' }} by User #{{ reply.userId }}</span>
+                        <button (click)="replyToUser(comment.id, reply.userId)"
+                            class="text-blue-600 hover:underline">Reply</button>
                     </div>
                 </div>
             </div>

@@ -17,12 +17,12 @@ export class AuthService {
         return localStorage.getItem('logged_in') === 'true';
     }
 
-    register(data: any): Observable<any> {
-        return this.http.post(`${API_URL}/register`, data);
+    register(data: any): Observable<string> {
+        return this.http.post(`${API_URL}/register`, data, { withCredentials: true, responseType: 'text' });
     }
 
-    login(data: any): Observable<any> {
-        return this.http.post(`${API_URL}/login`, data).pipe(
+    login(data: any): Observable<string> {
+        return this.http.post(`${API_URL}/login`, data, { withCredentials: true, responseType: 'text' }).pipe(
             tap(() => {
                 this.isLoggedIn.set(true);
                 localStorage.setItem('logged_in', 'true');
@@ -36,8 +36,8 @@ export class AuthService {
         this.router.navigate(['/login']);
     }
 
-    refreshToken(): Observable<any> {
-        return this.http.post(`${API_URL}/refresh`, {}, { withCredentials: true }).pipe(
+    refreshToken(): Observable<string> {
+        return this.http.post(`${API_URL}/refresh`, {}, { withCredentials: true, responseType: 'text' }).pipe(
             tap(() => {
                 this.isLoggedIn.set(true);
             }),

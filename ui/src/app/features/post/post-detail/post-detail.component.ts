@@ -103,4 +103,12 @@ export class PostDetailComponent implements OnInit, AfterViewInit {
             error: (err) => alert('Failed to post reply: ' + (err.error?.message || 'Unknown error'))
         });
     }
+
+    replyToUser(commentId: number, userId: number) {
+        this.showReplyForm[commentId] = true;
+        const mention = `@User #${userId} `;
+        if (!this.replyContent[commentId] || !this.replyContent[commentId].startsWith(mention)) {
+            this.replyContent[commentId] = mention + (this.replyContent[commentId] || '');
+        }
+    }
 }
