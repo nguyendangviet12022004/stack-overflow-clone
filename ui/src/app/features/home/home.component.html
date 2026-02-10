@@ -1,0 +1,55 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+        <div>
+            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Top Questions</h1>
+            <p class="mt-2 text-sm text-gray-500">Explore the latest questions from the community.</p>
+        </div>
+        <a routerLink="/posts/new"
+            class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-150">
+            Ask Question
+        </a>
+    </div>
+
+    <div class="bg-white shadow overflow-hidden sm:rounded-md border border-gray-100">
+        <ul class="divide-y divide-gray-200">
+            <li *ngFor="let post of posts" class="hover:bg-gray-50 transition duration-150">
+                <div class="px-6 py-6 sm:px-8">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1 min-w-0">
+                            <h3
+                                class="text-xl font-bold text-blue-600 truncate hover:text-blue-500 cursor-pointer mb-2">
+                                {{ post.title }}
+                            </h3>
+                            <div class="text-gray-700 text-sm line-clamp-3 prose prose-sm max-w-none mb-4"
+                                [innerHTML]="post.content"></div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span *ngFor="let tag of post.tags"
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100">
+                                    {{ tag.name }}
+                                </span>
+                                <span class="ml-auto text-sm text-gray-400">
+                                    asked {{ post.createdAt | date:'MMM d, y, h:mm a' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        <div *ngIf="posts.length === 0" class="flex flex-col items-center justify-center py-24 px-4 text-center">
+            <svg class="h-16 w-16 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 class="text-lg font-medium text-gray-900">No questions yet</h3>
+            <p class="mt-1 text-sm text-gray-500">Be the first one to ask a question on StackOverflow Clone!</p>
+            <div class="mt-6">
+                <a routerLink="/posts/new"
+                    class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Ask Question
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

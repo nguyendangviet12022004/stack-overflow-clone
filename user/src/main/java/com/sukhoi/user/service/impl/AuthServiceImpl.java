@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +23,12 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtil jwtUtil;
 
     private final UserRepository userRepository;
+
     @Override
     public void register(RegisterRequest request) {
 
         // check if user with email already exists
-        if (userRepository.existsByEmail((request.email()))){
+        if (userRepository.existsByEmail((request.email()))) {
             throw new IllegalArgumentException("User with email " + request.email() + " already exists");
         }
 
@@ -45,8 +45,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public TokenResponse login(LoginRequest request) {
-        Authentication auth =  authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
-
+        Authentication auth = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
 
         User user = (User) auth.getPrincipal();
 
@@ -55,5 +55,23 @@ public class AuthServiceImpl implements AuthService {
         String refreshToken = jwtUtil.generateRefreshToken(user.getId());
 
         return new TokenResponse(accessToken, refreshToken);
+    }
+
+    @Override
+    public TokenResponse refreshToken(String refreshToken) {
+        if (!jwtUtil.validateToken(refreshToken)) {
+            throw new IllegalArgumentException("Invalid refresh token");
+        }
+
+        String userIdStr = jwtUtil.getUserIdFromToken(refreshToken);
+        int userId = Integer.parseInt(userIdStr);
+
+        // Optionally verify user exists and is active
+        userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        String newAccessToken = jwtUtil.generateAccessToken(userId);
+        String newRefreshToken = jwtUtil.generateRefreshToken(userId);
+
+        return new TokenResponse(newAccessToken, newRefreshToken);
     }
 }

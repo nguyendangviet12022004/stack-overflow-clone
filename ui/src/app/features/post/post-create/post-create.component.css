@@ -1,0 +1,20 @@
+.ql-editor {
+    min-height: 200px;
+    font-size: 16px;
+}
+
+.ql-toolbar.ql-snow {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    border-color: #e5e7eb;
+}
+
+.ql-container.ql-snow {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    border-color: #e5e7eb;
+}
+
+:host ::ng-deep .ql-snow .ql-stroke {
+    stroke: #6b7280;
+}

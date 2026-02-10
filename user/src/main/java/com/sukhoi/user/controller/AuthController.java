@@ -22,13 +22,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request){
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         authService.register(request);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request){
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         var tokenResponse = authService.login(request);
         String accessToken = tokenResponse.accessToken();
         String refreshToken = tokenResponse.refreshToken();
@@ -45,12 +45,38 @@ public class AuthController {
                 .maxAge(60 * 60 * 24 * 7) // 7 days
                 .build();
 
-
-
-
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
                 .body("Login successful");
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(
+            @org.springframework.web.bind.annotation.CookieValue(name = "refresh_token", required = false) String refreshToken) {
+        if (refreshToken == null) {
+            return ResponseEntity.badRequest().body("Refresh token is missing");
+        }
+
+        var tokenResponse = authService.refreshToken(refreshToken);
+        String newAccessToken = tokenResponse.accessToken();
+        String newRefreshToken = tokenResponse.refreshToken();
+
+        ResponseCookie accessTokenCookie = ResponseCookie.from("access_token", newAccessToken)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(60 * 15) // 15 minutes
+                .build();
+
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refresh_token", newRefreshToken)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(60 * 60 * 24 * 7) // 7 days
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
+                .body("Refresh successful");
     }
 }

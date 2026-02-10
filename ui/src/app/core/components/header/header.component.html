@@ -1,0 +1,49 @@
+<nav class="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center">
+                <a routerLink="/" class="flex-shrink-0 flex items-center group">
+                    <svg class="h-8 w-8 text-orange-500 transform group-hover:rotate-12 transition-transform duration-200"
+                        viewBox="0 0 120 120" fill="currentColor">
+                        <path d="M84.4 93.8V70.6h7.7v30.9H22.6V70.6h7.7v23.2H84.4z" />
+                        <path
+                            d="M38.8 68.4l37.8 7.9 1.6-7.6-37.8-7.9-1.6 7.6zm5-18l35 15.3 3.1-7.1-35-15.3-3.1 7.1zm8.5-17.2l29.7 24.7 4.9-5.9-29.7-24.7-4.9 5.9zm13.1-14.8l22.4 31.5 6.3-4.5-22.4-31.5-6.3 4.5zM31 82.1h38.6v-7.7H31v7.7z" />
+                    </svg>
+                    <span
+                        class="ml-2 text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-200">
+                        stack<span class="font-light">overflow</span>
+                    </span>
+                </a>
+                <div class="hidden sm:ml-8 sm:flex sm:space-x-8">
+                    <a routerLink="/" routerLinkActive="text-orange-600 border-orange-500"
+                        [routerLinkActiveOptions]="{exact: true}"
+                        class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Questions
+                    </a>
+                    <a routerLink="/posts/new" routerLinkActive="text-orange-600 border-orange-500"
+                        class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Ask Question
+                    </a>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <ng-container *ngIf="!authService.isLoggedIn()">
+                    <a routerLink="/login"
+                        class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">Log in</a>
+                    <a routerLink="/register"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150">Sign
+                        up</a>
+                </ng-container>
+                <ng-container *ngIf="authService.isLoggedIn()">
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm text-gray-600 hidden md:block">Welcome back!</span>
+                        <button (click)="authService.logout()"
+                            class="text-gray-500 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150 border border-gray-200 hover:border-red-200 hover:bg-red-50">
+                            Log out
+                        </button>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</nav>
