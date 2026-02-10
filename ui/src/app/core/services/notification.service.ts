@@ -82,12 +82,21 @@ export class NotificationService {
         const unreadCount = notifications.filter(n => !n.isRead).length;
         this.unreadCountSubject.next(unreadCount);
     }
-
     markAsRead(notificationId: string) {
         this.http.post(`${this.baseUrl}/api/notifications/${notificationId}/read`, {}, { withCredentials: true }).subscribe(() => {
             const updated = this.notificationsSubject.value.map(n =>
                 n.id === notificationId ? { ...n, isRead: true } : n
             );
+            this.notificationsSubject.next(updated);
+            this.updateUnreadCount(updated);
+        });
+    }
+
+    markAllAsRead() {
+        if (this.unreadCountSubject.value === 0) return;
+
+        this.http.post(`${this.baseUrl}/api/notifications/mark-all-as-read`, {}, { withCredentials: true }).subscribe(() => {
+            const updated = this.notificationsSubject.value.map(n => ({ ...n, isRead: true }));
             this.notificationsSubject.next(updated);
             this.updateUnreadCount(updated);
         });

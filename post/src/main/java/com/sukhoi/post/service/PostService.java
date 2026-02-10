@@ -151,7 +151,6 @@ public class PostService {
                             .userId(userId)
                             .build());
 
-                    // Send notification to post owner
                     if (post.getUserId() != null && !post.getUserId().equals(userId)) {
                         NotificationRequest notification = NotificationRequest.builder()
                                 .recipientId(post.getUserId())

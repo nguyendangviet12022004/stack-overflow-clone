@@ -30,6 +30,9 @@ export class HeaderComponent {
 
     toggleNotifications() {
         this.showNotifications = !this.showNotifications;
+        if (this.showNotifications) {
+            this.notificationService.markAllAsRead();
+        }
     }
 
     markAsRead(id: string, event: Event) {

@@ -75,11 +75,13 @@
                             <!-- Notification Menu -->
                             <div *ngIf="showNotifications" (click)="$event.stopPropagation()"
                                 class="origin-top-right absolute right-0 mt-2 w-80 rounded-xl shadow-2xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none overflow-hidden z-50 transition-all duration-300">
-                                <div
-                                    class="px-4 py-3 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                                <div class="px-4 py-3 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                                     <h3 class="text-sm font-semibold text-gray-900">Notifications</h3>
-                                    <span class="text-xs text-gray-500">{{ (notificationService.notifications$ |
-                                        async)?.length }} items</span>
+                                    <button (click)="notificationService.markAllAsRead()" 
+                                        *ngIf="(notificationService.unreadCount$ | async) !== 0"
+                                        class="text-xs font-medium text-blue-600 hover:text-blue-700 transition-colors duration-150">
+                                        Mark all as read
+                                    </button>
                                 </div>
                                 <div class="max-h-96 overflow-y-auto">
                                     <ng-container *ngIf="(notificationService.notifications$ | async) as notifications">
