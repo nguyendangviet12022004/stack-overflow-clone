@@ -9,6 +9,13 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  rabbitmq:
+    username: ${RABBITMQ_USER:user}
+    password: ${RABBITMQ_PASSWORD:password}
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
 
 private-key:
   path: ${PRIVATE_KEY_PATH:key/private.pem}
+
+#$env:PRIVATE_KEY_PATH="D:\Interview\stack-overflow-clone\key\private.pem"

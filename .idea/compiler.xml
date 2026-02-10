@@ -7,7 +7,6 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="signaling" />
         <module name="mail" />
         <module name="post" />
         <module name="eureka" />
@@ -18,6 +17,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="mailing" target="21" />
+      <module name="signaling" target="21" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

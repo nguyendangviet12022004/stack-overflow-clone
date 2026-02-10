@@ -1,21 +1,21 @@
-package com.sukhoi.user.controller;
+package com.sukhoi.mail.controller;
 
-import com.sukhoi.user.message.AmqpMessageSender;
+import com.sukhoi.mail.service.MailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/test")
+@RequestMapping("/test-mail")
 public class TestController {
+    private final MailService mailService;
 
-    private  final AmqpMessageSender messageSender;
-
-    @GetMapping
+    @GetMapping("")
     public String test() {
-        messageSender.sendActivateMail(1, "viet.ngdang.dev@gmail.com", "123456");
-        return "Test endpoint is working";
+        mailService.sendActivationEmail("viet@gmail", 2, "code");
+        return "Mail Service is working!";
     }
 }

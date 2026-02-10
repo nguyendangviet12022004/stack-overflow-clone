@@ -1,7 +1,25 @@
 spring:
   application:
     name: mail
-
+  rabbitmq:
+    username: ${RABBITMQ_USER:user}
+    password: ${RABBITMQ_PASSWORD:password}
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
     #config server
   config:
     import: optional:configserver:http://${CONFIG_SERVER_HOST:localhost}:${CONFIG_SERVER_PORT:8070}
+
+  mail:
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: false
+          auth: false
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+    host: localhost
+    port: 1025
