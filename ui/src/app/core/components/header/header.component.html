@@ -20,6 +20,11 @@
                         class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
                         Questions
                     </a>
+                    <a *ngIf="authService.isLoggedIn()" routerLink="/favorites"
+                        routerLinkActive="text-orange-600 border-orange-500"
+                        class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Favorites
+                    </a>
                     <a routerLink="/posts/new" routerLinkActive="text-orange-600 border-orange-500"
                         class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
                         Ask Question

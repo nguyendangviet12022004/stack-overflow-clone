@@ -42,4 +42,12 @@ export class PostService {
     addReply(commentId: number, content: string): Observable<any> {
         return this.http.post(`${API_URL}/comments/${commentId}/replies`, { content }, { withCredentials: true });
     }
+
+    toggleFavorite(postId: number): Observable<any> {
+        return this.http.post(`${API_URL}/${postId}/favorite`, {}, { withCredentials: true });
+    }
+
+    getFavoritePosts(): Observable<any[]> {
+        return this.http.get<any[]>(`${API_URL}/favorites`, { withCredentials: true });
+    }
 }

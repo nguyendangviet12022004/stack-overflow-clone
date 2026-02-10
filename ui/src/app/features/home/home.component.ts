@@ -73,4 +73,18 @@ export class HomeComponent implements OnInit {
     clearFilters() {
         this.router.navigate(['/']);
     }
+
+    toggleFavorite(post: any) {
+        this.postService.toggleFavorite(post.id).subscribe({
+            next: () => {
+                post.isFavorited = !post.isFavorited;
+                post.favoriteCount += post.isFavorited ? 1 : -1;
+            },
+            error: (err) => {
+                if (err.status === 401) {
+                    this.router.navigate(['/login']);
+                }
+            }
+        });
+    }
 }

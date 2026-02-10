@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { PostService } from '../../../core/services/post.service';
 import { FormsModule } from '@angular/forms';
 
@@ -22,6 +22,7 @@ export class PostDetailComponent implements OnInit, AfterViewInit {
 
     constructor(
         private route: ActivatedRoute,
+        private router: Router,
         private postService: PostService
     ) { }
 
@@ -34,6 +35,20 @@ export class PostDetailComponent implements OnInit, AfterViewInit {
         this.postService.getPost(id).subscribe({
             next: (data) => this.post = data,
             error: (err) => console.error('Failed to load post', err)
+        });
+    }
+
+    toggleFavorite() {
+        this.postService.toggleFavorite(this.post.id).subscribe({
+            next: () => {
+                this.post.isFavorited = !this.post.isFavorited;
+                this.post.favoriteCount += this.post.isFavorited ? 1 : -1;
+            },
+            error: (err) => {
+                if (err.status === 401) {
+                    this.router.navigate(['/login']);
+                }
+            }
         });
     }
 
