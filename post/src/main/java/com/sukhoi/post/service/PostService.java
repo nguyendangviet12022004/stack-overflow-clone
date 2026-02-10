@@ -2,9 +2,11 @@ package com.sukhoi.post.service;
 
 import com.sukhoi.post.dto.*;
 import com.sukhoi.post.entity.Comment;
+import com.sukhoi.post.entity.Favorite;
 import com.sukhoi.post.entity.Post;
 import com.sukhoi.post.entity.Tag;
 import com.sukhoi.post.repository.CommentRepository;
+import com.sukhoi.post.repository.FavoriteRepository;
 import com.sukhoi.post.repository.PostRepository;
 import com.sukhoi.post.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
     private final CommentRepository commentRepository;
+    private final FavoriteRepository favoriteRepository;
 
     @Transactional
     public PostResponse createPost(PostRequest request, Integer userId) {
@@ -44,7 +47,7 @@ public class PostService {
         return mapToPostResponse(savedPost);
     }
 
-    public List<PostResponse> searchPosts(List<String> tagNames, String query) {
+    public List<PostResponse> searchPosts(List<String> tagNames, String query, Integer currentUserId) {
         List<Post> posts;
         if (query != null && !query.isEmpty()) {
             posts = postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(query, query);
@@ -53,7 +56,7 @@ public class PostService {
         } else {
             posts = postRepository.findAll();
         }
-        return posts.stream().map(this::mapToPostResponse).collect(Collectors.toList());
+        return posts.stream().map(p -> mapToPostResponse(p, currentUserId)).collect(Collectors.toList());
     }
 
     @Transactional
@@ -99,10 +102,29 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    public PostResponse getPost(Long id) {
+    public PostResponse getPost(Long id, Integer currentUserId) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
-        return mapToPostResponse(post);
+        return mapToPostResponse(post, currentUserId);
+    }
+
+    @Transactional
+    public void toggleFavorite(Long postId, Integer userId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        favoriteRepository.findByPostIdAndUserId(postId, userId).ifPresentOrElse(
+                favoriteRepository::delete,
+                () -> favoriteRepository.save(Favorite.builder()
+                        .post(post)
+                        .userId(userId)
+                        .build()));
+    }
+
+    public List<PostResponse> getFavoritePosts(Integer userId) {
+        return favoriteRepository.findByUserId(userId).stream()
+                .map(f -> mapToPostResponse(f.getPost(), userId))
+                .collect(Collectors.toList());
     }
 
     public List<TagResponse> searchTags(String query) {
@@ -112,6 +134,10 @@ public class PostService {
     }
 
     private PostResponse mapToPostResponse(Post post) {
+        return mapToPostResponse(post, null);
+    }
+
+    private PostResponse mapToPostResponse(Post post, Integer currentUserId) {
         Set<TagResponse> tags = post.getTags().stream()
                 .map(this::mapToTagResponse)
                 .collect(Collectors.toSet());
@@ -121,6 +147,10 @@ public class PostService {
                 .map(this::mapToCommentResponse)
                 .collect(Collectors.toList());
 
+        long favoriteCount = favoriteRepository.countByPostId(post.getId());
+        boolean isFavorited = currentUserId != null
+                && favoriteRepository.existsByPostIdAndUserId(post.getId(), currentUserId);
+
         return new PostResponse(
                 post.getId(),
                 post.getTitle(),
@@ -128,7 +158,9 @@ public class PostService {
                 post.getUserId(),
                 post.getCreatedAt(),
                 tags,
-                comments);
+                comments,
+                favoriteCount,
+                isFavorited);
     }
 
     private TagResponse mapToTagResponse(Tag tag) {
