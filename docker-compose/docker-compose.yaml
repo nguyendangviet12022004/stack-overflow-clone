@@ -60,21 +60,21 @@ services:
       start_period: 40s
 
 
-  # notification-db:
-  #   image: mongo
-  #   container_name: notification-db
-  #   ports:
-  #     - "27017:27017"
-  #   volumes:
-  #     - notification-db-data:/data/db
-  #   env_file:
-  #     - path: ../env/notification/notification.db.env
-  #   healthcheck:
-  #     test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
-  #     interval: 20s
-  #     timeout: 5s
-  #     retries: 5
-  #     start_period: 40s
+  notification-db:
+    image: mongo
+    container_name: notification-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - notification-db-data:/data/db
+    env_file:
+      - path: ../env/notification/notification.db.env
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
 
 
   #config server --------------------------------------
@@ -204,6 +204,24 @@ services:
       eureka:
         condition: service_healthy
       post-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  notification:
+    build:
+      context: ../notification
+      dockerfile: ./../Dockerfile
+      args:
+        - PORT=8004
+    container_name: notification
+    ports:
+        - "8004:8004"
+    env_file:
+      - ../env/notification/notification.prod.env
+      - ../env/.env
+    depends_on:
+      eureka:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy

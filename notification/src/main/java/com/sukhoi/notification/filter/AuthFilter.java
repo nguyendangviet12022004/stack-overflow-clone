@@ -16,18 +16,23 @@ import java.util.List;
 @Component
 public class AuthFilter extends OncePerRequestFilter {
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        try{
-            int userId = Integer.parseInt(request.getHeader("X-User-Id"));
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        try {
+            String userIdHeader = request.getHeader("X-User-Id");
+            if (userIdHeader == null) {
+                userIdHeader = request.getHeader("X-USER-ID");
+            }
 
+            if (userIdHeader != null) {
+                int userId = Integer.parseInt(userIdHeader);
+                Authentication authentication = new UsernamePasswordAuthenticationToken(userId, null, List.of());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
 
-            Authentication authentication = new UsernamePasswordAuthenticationToken(userId, null, List.of());
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            filterChain.doFilter(request,response);
+            filterChain.doFilter(request, response);
         } catch (Exception e) {
-            filterChain.doFilter(request,response);
+            filterChain.doFilter(request, response);
         }
     }
 }

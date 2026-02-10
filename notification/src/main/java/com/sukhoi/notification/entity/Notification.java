@@ -10,26 +10,21 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Document("notifications")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "notifications")
 public class Notification {
-
     @Id
     private String id;
-
-    private String userId;
-
+    private Integer recipientId;
+    private Integer senderId;
+    private String type;
+    private Long postId;
     private String message;
-
-    private String title;
-
-    private String link;
-
     private boolean isRead;
 
     @CreatedDate
-    private LocalDateTime timestamp;
+    private LocalDateTime createdAt;
 }

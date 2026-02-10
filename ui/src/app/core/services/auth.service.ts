@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, catchError, throwError, of } from 'rxjs';
+import { Observable, tap, catchError, throwError, of, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 
 const API_URL = 'http://localhost:8080/user/auth';
@@ -10,6 +10,8 @@ const API_URL = 'http://localhost:8080/user/auth';
 })
 export class AuthService {
     isLoggedIn = signal<boolean>(this.hasToken());
+    private currentUserSubject = new BehaviorSubject<any>(null);
+    currentUser$ = this.currentUserSubject.asObservable();
 
     constructor(private http: HttpClient, private router: Router) { }
 
@@ -26,12 +28,24 @@ export class AuthService {
             tap(() => {
                 this.isLoggedIn.set(true);
                 localStorage.setItem('logged_in', 'true');
+                this.getUserInfo().subscribe();
+            })
+        );
+    }
+
+    getUserInfo(): Observable<any> {
+        return this.http.get<any>(`http://localhost:8080/user/users/me`, { withCredentials: true }).pipe(
+            tap(user => this.currentUserSubject.next(user)),
+            catchError(err => {
+                this.logout();
+                return throwError(() => err);
             })
         );
     }
 
     logout(): void {
         this.isLoggedIn.set(false);
+        this.currentUserSubject.next(null);
         localStorage.removeItem('logged_in');
         this.router.navigate(['/login']);
     }

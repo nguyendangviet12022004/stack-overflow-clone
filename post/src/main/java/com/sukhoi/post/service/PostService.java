@@ -9,6 +9,9 @@ import com.sukhoi.post.repository.CommentRepository;
 import com.sukhoi.post.repository.FavoriteRepository;
 import com.sukhoi.post.repository.PostRepository;
 import com.sukhoi.post.repository.TagRepository;
+import com.sukhoi.post.constant.AmqpRoutingKey;
+import com.sukhoi.post.dto.message.NotificationRequest;
+import com.sukhoi.post.message.AmqpMessageSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +28,7 @@ public class PostService {
     private final TagRepository tagRepository;
     private final CommentRepository commentRepository;
     private final FavoriteRepository favoriteRepository;
+    private final AmqpMessageSender amqpMessageSender;
 
     @Transactional
     public PostResponse createPost(PostRequest request, Integer userId) {
@@ -71,6 +75,19 @@ public class PostService {
                 .build();
 
         Comment saved = commentRepository.save(comment);
+
+        // Send notification to post owner
+        if (post.getUserId() != null && !post.getUserId().equals(userId)) {
+            NotificationRequest notification = NotificationRequest.builder()
+                    .recipientId(post.getUserId())
+                    .senderId(userId)
+                    .type("COMMENT")
+                    .postId(post.getId())
+                    .message("User " + userId + " commented on your post: " + post.getTitle())
+                    .build();
+            amqpMessageSender.sendNotification(notification, AmqpRoutingKey.NOTIFICATION_COMMENT_ROUTING_KEY);
+        }
+
         return mapToCommentResponse(saved);
     }
 
@@ -87,6 +104,19 @@ public class PostService {
                 .build();
 
         Comment saved = commentRepository.save(reply);
+
+        // Send notification to parent comment owner
+        if (parent.getUserId() != null && !parent.getUserId().equals(userId)) {
+            NotificationRequest notification = NotificationRequest.builder()
+                    .recipientId(parent.getUserId())
+                    .senderId(userId)
+                    .type("REPLY")
+                    .postId(parent.getPost().getId())
+                    .message("User " + userId + " replied to your comment on post: " + parent.getPost().getTitle())
+                    .build();
+            amqpMessageSender.sendNotification(notification, AmqpRoutingKey.NOTIFICATION_COMMENT_ROUTING_KEY);
+        }
+
         return mapToCommentResponse(saved);
     }
 
@@ -115,10 +145,24 @@ public class PostService {
 
         favoriteRepository.findByPostIdAndUserId(postId, userId).ifPresentOrElse(
                 favoriteRepository::delete,
-                () -> favoriteRepository.save(Favorite.builder()
-                        .post(post)
-                        .userId(userId)
-                        .build()));
+                () -> {
+                    favoriteRepository.save(Favorite.builder()
+                            .post(post)
+                            .userId(userId)
+                            .build());
+
+                    // Send notification to post owner
+                    if (post.getUserId() != null && !post.getUserId().equals(userId)) {
+                        NotificationRequest notification = NotificationRequest.builder()
+                                .recipientId(post.getUserId())
+                                .senderId(userId)
+                                .type("LIKE")
+                                .postId(post.getId())
+                                .message("User " + userId + " liked your post: " + post.getTitle())
+                                .build();
+                        amqpMessageSender.sendNotification(notification, AmqpRoutingKey.NOTIFICATION_LIKE_ROUTING_KEY);
+                    }
+                });
     }
 
     public List<PostResponse> getFavoritePosts(Integer userId) {
