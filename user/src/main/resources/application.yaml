@@ -17,3 +17,5 @@ spring:
 
 private-key:
   path: ${PRIVATE_KEY_PATH:key/private.pem}
+
+#$env:PRIVATE_KEY_PATH="D:\Interview\stack-overflow-clone\key\private.pem"

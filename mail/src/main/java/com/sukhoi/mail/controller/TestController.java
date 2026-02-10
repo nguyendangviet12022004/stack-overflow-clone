@@ -15,7 +15,7 @@ public class TestController {
 
     @GetMapping("")
     public String test() {
-        mailService.sendActivationEmail("viet@gmail",2,"code");
+        mailService.sendActivationEmail("viet@gmail", 2, "code");
         return "Mail Service is working!";
     }
 }
