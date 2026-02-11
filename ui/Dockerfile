@@ -3,7 +3,7 @@
 # =========================================
 
 # Use a lightweight DHI Node.js image for building
-FROM dhi.io/node:24-alpine3.22-dev AS builder
+FROM node:24-alpine3.22-dev AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
