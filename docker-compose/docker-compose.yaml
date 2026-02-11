@@ -26,55 +26,55 @@ services:
       start_period: 40s
 
   #db --------------------------------------------------------
-  user-db:
-    image: mysql:8.0.44-debian
-    container_name: user-db
-    env_file:
-      - path: ../env/user/user.db.env
-    ports:
-        - "33061:3306"
-    volumes:
-        - user-db-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      interval: 20s
-      timeout: 5s
-      retries: 5
-      start_period: 40s
+  # user-db:
+  #   image: mysql:8.0.44-debian
+  #   container_name: user-db
+  #   env_file:
+  #     - path: ../env/user/user.db.env
+  #   ports:
+  #       - "33061:3306"
+  #   volumes:
+  #       - user-db-data:/var/lib/mysql
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+  #     interval: 20s
+  #     timeout: 5s
+  #     retries: 5
+  #     start_period: 40s
 
 
-  post-db:
-    image: mysql:8.0.44-debian
-    container_name: post-db
-    env_file:
-      - path: ../env/post/post.db.env
-    ports:
-      - "33062:3306"
-    volumes:
-      - "post-db-data:/var/lib/mysql"
-    healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
-      interval: 20s
-      timeout: 5s
-      retries: 5
-      start_period: 40s
+  # post-db:
+  #   image: mysql:8.0.44-debian
+  #   container_name: post-db
+  #   env_file:
+  #     - path: ../env/post/post.db.env
+  #   ports:
+  #     - "33062:3306"
+  #   volumes:
+  #     - "post-db-data:/var/lib/mysql"
+  #   healthcheck:
+  #     test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+  #     interval: 20s
+  #     timeout: 5s
+  #     retries: 5
+  #     start_period: 40s
 
 
-  notification-db:
-    image: mongo
-    container_name: notification-db
-    ports:
-      - "27017:27017"
-    volumes:
-      - notification-db-data:/data/db
-    env_file:
-      - path: ../env/notification/notification.db.env
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
-      interval: 20s
-      timeout: 5s
-      retries: 5
-      start_period: 40s
+  # notification-db:
+  #   image: mongo
+  #   container_name: notification-db
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - notification-db-data:/data/db
+  #   env_file:
+  #     - path: ../env/notification/notification.db.env
+  #   healthcheck:
+  #     test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+  #     interval: 20s
+  #     timeout: 5s
+  #     retries: 5
+  #     start_period: 40s
 
 
   #config server --------------------------------------
@@ -226,11 +226,17 @@ services:
       rabbitmq:
         condition: service_healthy
 
+  ui:
+    build:
+      context: ../ui
+    container_name: ui
+    ports:
+      - "80:8080"
 #volumes
-volumes:
-    user-db-data:
-      driver: local
-    post-db-data:
-      driver: local
-    notification-db-data:
-      driver: local
+# volumes:
+#     user-db-data:
+#       driver: local
+#     post-db-data:
+#       driver: local
+#     notification-db-data:
+#       driver: local
